@@ -36,3 +36,6 @@ Log
 *.exe
 *.out
 *.app
+
+# pcd file
+*.pcd
