@@ -124,6 +124,7 @@ bool FrontEnd::Update(const CloudData& cloud_data, Eigen::Matrix4f& cloud_pose) 
     CloudData::CLOUD_PTR filtered_cloud_ptr(new CloudData::CLOUD());
     frame_filter_ptr_->Filter(current_frame_.cloud_data.cloud_ptr, filtered_cloud_ptr);
 
+    // 静态变量只初始化一次
     static Eigen::Matrix4f step_pose = Eigen::Matrix4f::Identity();
     static Eigen::Matrix4f last_pose = init_pose_;
     static Eigen::Matrix4f predict_pose = init_pose_;
@@ -165,8 +166,8 @@ bool FrontEnd::SetInitPose(const Eigen::Matrix4f& init_pose) {
 
 bool FrontEnd::UpdateWithNewFrame(const Frame& new_key_frame) {
     // 把关键帧点云存储到硬盘里，节省内存
-    std::string file_path = data_path_ + "/key_frames/key_frame_" + std::to_string(global_map_frames_.size()) + ".pcd";
-    pcl::io::savePCDFileBinary(file_path, *new_key_frame.cloud_data.cloud_ptr);
+    // std::string file_path = data_path_ + "/key_frames/key_frame_" + std::to_string(global_map_frames_.size()) + ".pcd";
+    // pcl::io::savePCDFileBinary(file_path, *new_key_frame.cloud_data.cloud_ptr);
 
     Frame key_frame = new_key_frame;
     // 这一步的目的是为了把关键帧的点云保存下来

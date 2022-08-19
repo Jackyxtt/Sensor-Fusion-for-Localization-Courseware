@@ -2,7 +2,7 @@ data_path: /workspace/assignments/02-lidar-odometry-basic/src/lidar_localization
 
 # 匹配
 # TODO: implement your custom registration method and add it here
-registration_method: SICP   # 选择点云匹配方法，目前支持：ICP, ICP_SVD, NDT, SICP
+registration_method: NDT   # 选择点云匹配方法，目前支持：ICP, ICP_SVD, NDT, SICP
 
 # 局部地图
 key_frame_distance: 2.0 # 关键帧距离
