@@ -362,6 +362,7 @@ void laserCloudHandler(const sensor_msgs::PointCloud2ConstPtr &laserCloudMsg)
                     }
 
                     cloudNeighborPicked[ind] = 1;
+                    // 与当前点距离的平方 <= 0.05的点标记为选择过，避免特征点密集分布
                     for (int l = 1; l <= 5; l++)
                     { 
                         float diffX = laserCloud->points[ind + l].x - laserCloud->points[ind + l - 1].x;
