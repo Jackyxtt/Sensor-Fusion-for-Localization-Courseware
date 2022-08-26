@@ -109,16 +109,17 @@ std::queue<sensor_msgs::PointCloud2ConstPtr> fullPointsBuf;
 std::mutex mBuf;
 
 // undistort lidar point
-void TransformToStart(PointType const *const pi, PointType *const po)
+void TransformToStart(PointType const *const pi, PointType *const po) //PointType is pcl::PointXYZI
 {
     //interpolation ratio
     double s;
     if (DISTORTION)
-        s = (pi->intensity - int(pi->intensity)) / SCAN_PERIOD;
+    // intensity 实数部分存的是 scan上点的 id 虚数部分存的这一点相对这一帧起始点的时间差
+        s = (pi->intensity - int(pi->intensity)) / SCAN_PERIOD;//intensity的整体减去实数部分,就是时间差,那么除以周期,也就是时间占比了
     else
         s = 1.0;
     //s = 1;
-    Eigen::Quaterniond q_point_last = Eigen::Quaterniond::Identity().slerp(s, q_last_curr);
+    Eigen::Quaterniond q_point_last = Eigen::Quaterniond::Identity().slerp(s, q_last_curr);//球面线性插值
     Eigen::Vector3d t_point_last = s * t_last_curr;
     Eigen::Vector3d point(pi->x, pi->y, pi->z);
     Eigen::Vector3d un_point = q_point_last * point + t_point_last;
@@ -308,6 +309,7 @@ int main(int argc, char **argv)
                         if (pointSearchSqDis[0] < DISTANCE_SQ_THRESHOLD)
                         {
                             closestPointInd = pointSearchInd[0];
+                            //线号
                             int closestPointScanID = int(laserCloudCornerLast->points[closestPointInd].intensity);
 
                             double minPointSqDis2 = DISTANCE_SQ_THRESHOLD;
