@@ -385,7 +385,7 @@ int main(int argc, char **argv)
                             else
                                 s = 1.0;
                             // ceres::CostFunction *cost_function = LidarEdgeFactor::Create(curr_point, last_point_a, last_point_b, s);
-                            ceres::CostFunction *cost_function = new LidarEdgeAnalyticCostFunction(curr_point, last_point_a, last_point_b, s);
+                            ceres::CostFunction *cost_function = new EdgeAnalyticCostFunction(curr_point, last_point_a, last_point_b, s);
                             problem.AddResidualBlock(cost_function, loss_function, para_q, para_t);
                             corner_correspondence++;
                         }
