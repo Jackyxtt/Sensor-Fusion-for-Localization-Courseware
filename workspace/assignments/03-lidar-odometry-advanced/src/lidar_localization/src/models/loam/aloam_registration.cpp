@@ -12,8 +12,6 @@
 
 #include "lidar_localization/models/loam/aloam_registration.hpp"
 
-#include "lidar_localization/models/loam/aloam_analytic_factor.hpp"
-
 namespace lidar_localization {
 
 CeresALOAMRegistration::CeresALOAMRegistration(

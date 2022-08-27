@@ -37,7 +37,7 @@ virtual  bool  Evaluate(double  const  *const  *parameters,
         Eigen::Vector3d  lp_r ;
         lp_r =  q_last_curr*curr_point;
         lp     =   q_last_curr  * curr_point  + t_last_curr;   //   new point
-        Eigen::Vector3d  nu =  (lp - last_point_a).cross(lp - last_point_b);
+        Eigen::Vector3d  nu =  (lp - last_point_b).cross(lp - last_point_a);
         Eigen::Vector3d  de = last_point_a  - last_point_b;
 
         residuals[0]  =  nu.norm()  /  de.norm();                              //  线残差
@@ -49,8 +49,6 @@ virtual  bool  Evaluate(double  const  *const  *parameters,
         {
                 if (jacobians[0]  !=  NULL)
                 {
-                        Eigen::Vector3d  re = last_point_b  -   last_point_a;
-                        Eigen::Matrix3d  skew_re  =   skew(re);
                         Eigen::Matrix3d  skew_de  =   skew(de);
 
                         //  J_so3_Rotation
@@ -88,7 +86,7 @@ public:
                                                          double  *residuals, 
                                                           double  **jacobians)const {      //   定义残差模型
                 // 叉乘运算， j,l,m 三个但构成的平行四边面积(摸)和该面的单位法向量(方向)
-                Eigen::Vector3d  ljm_norm = (last_point_j - last_point_l).cross(last_point_j - last_point_m);
+                Eigen::Vector3d  ljm_norm = (last_point_l - last_point_j).cross(last_point_m - last_point_j);
 		ljm_norm.normalize();    //  单位法向量
 
                 Eigen::Map<const Eigen::Quaterniond>  q_last_curr(parameters[0]);
