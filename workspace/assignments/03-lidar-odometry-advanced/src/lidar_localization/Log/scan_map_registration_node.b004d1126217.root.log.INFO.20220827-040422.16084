@@ -1,0 +1,9 @@
+Log file created at: 2022/08/27 04:04:22
+Running on machine: b004d1126217
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I0827 04:04:22.810086 16084 voxel_filter.cpp:27] Voxel Filter params:
+0.4, 0.4, 0.4
+
+I0827 04:04:22.812744 16084 voxel_filter.cpp:27] Voxel Filter params:
+0.8, 0.8, 0.8
+
