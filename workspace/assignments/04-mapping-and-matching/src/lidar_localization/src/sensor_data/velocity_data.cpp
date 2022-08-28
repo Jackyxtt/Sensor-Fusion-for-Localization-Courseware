@@ -51,6 +51,7 @@ bool VelocityData::SyncData(std::deque<VelocityData>& UnsyncedData, std::deque<V
     return true;
 }
 
+// 没懂 在DataPretreatFlow::TransformData()调用了本函数，本函数作用：把IMU系测得的线速度和角速度变换到lidar坐标系下。
 void VelocityData::TransformCoordinate(Eigen::Matrix4f transform_matrix) {
     Eigen::Matrix4d matrix = transform_matrix.cast<double>();
 
