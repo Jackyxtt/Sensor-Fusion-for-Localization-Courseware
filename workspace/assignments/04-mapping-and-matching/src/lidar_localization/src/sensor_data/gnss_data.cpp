@@ -16,11 +16,17 @@ GeographicLib::LocalCartesian lidar_localization::GNSSData::geo_converter;
 
 namespace lidar_localization {
 void GNSSData::InitOriginPosition() {
-    geo_converter.Reset(latitude, longitude, altitude);
+    // geo_converter.Reset(latitude, longitude, altitude);
+    // GNSS会把收到的第一帧GNSS数据当做原点，但从rosbag 100s，200s开始需要手动设置建图的起点。
+    geo_converter.Reset(48.982658,  8.390455, 116.396412);
 
-    origin_longitude = longitude;
-    origin_latitude = latitude;
-    origin_altitude = altitude;
+    // origin_longitude = longitude;
+    // origin_latitude = latitude;
+    // origin_altitude = altitude;
+
+    origin_longitude = 8.390455;
+    origin_latitude = 48.982658;
+    origin_altitude = 116.396412;
 
     origin_position_inited = true;
 }
