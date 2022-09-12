@@ -25,3 +25,9 @@ imu:
 pose:
     frame_id: inertial
     topic_name: /pose/ground_truth
+
+save_path:
+    path: /workspace/assignments/06-imu-navigation/src/imu_integration/result/midPointIntegration.txt
+
+Integration:
+    useEuler: true

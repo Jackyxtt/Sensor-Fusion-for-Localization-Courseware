@@ -3,7 +3,7 @@ imu:
     gravity:
         x:  0.0
         y:  0.0
-        z: -9.81
+        z: -9.794216
     bias:
         angular_velocity:
             x: 0.0
@@ -17,5 +17,11 @@ imu:
 pose:
     frame_id: inertial
     topic_name: 
-        ground_truth: /pose/ground_truth
+        ground_truth: /sim/gt
         estimation: /pose/estimation
+
+save_path:
+    path: /workspace/assignments/06-imu-navigation/src/imu_integration/result/midPointIntegration.txt
+
+Integration:
+    useEuler: false
