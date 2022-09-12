@@ -142,6 +142,10 @@ add_library(utils
   ${UTILS_SRCS}
 )
 
+## evaluator
+file(GLOB_RECURSE EVALUATOR_SRCS "src/evaluator/*.cpp")
+add_library(evaluator ${EVALUATOR_SRCS})
+
 ## Estimator
 file(GLOB_RECURSE ESTIMATOR_ACTIVITY_SRCS "src/estimator/*.cpp")
 file(GLOB_RECURSE ESTIMATOR_NODE_SRCS "src/estimator/node.cpp")
@@ -161,6 +165,14 @@ add_executable(estimator_node
 )
 target_link_libraries(estimator_node
   estimator_activity
+  ${catkin_LIBRARIES}
+)
+
+add_executable(evaluator_node
+  ${EVALUATOR_SRCS}
+  )
+target_link_libraries(evaluator_node 
+  evaluator
   ${catkin_LIBRARIES}
 )
 
@@ -214,6 +226,7 @@ target_link_libraries(generator_node
 install(TARGETS 
       generator_node
       estimator_node
+      evaluator_node
     RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -223,6 +236,7 @@ install(TARGETS
       utils
       generator_activity
       estimator_activity
+      evaluator
     ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
