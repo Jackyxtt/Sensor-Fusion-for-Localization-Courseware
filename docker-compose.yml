@@ -11,7 +11,7 @@ services:
     privileged: true
     environment:
         # set VNC login password here:
-        - VNC_PASSWORD=sensorfusion
+        - VNC_PASSWORD=1
     volumes:
       # mount your workspace here:
       - $PWD/workspace:/workspace
