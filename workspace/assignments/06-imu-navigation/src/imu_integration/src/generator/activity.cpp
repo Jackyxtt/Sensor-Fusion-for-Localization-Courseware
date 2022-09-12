@@ -3,12 +3,14 @@
  * @Author: Ge Yao
  * @Date: 2020-11-10 14:25:03
  */
+#include <fstream>
 #include "imu_integration/generator/node_constants.hpp"
 #include "imu_integration/generator/activity.hpp"
 #include "glog/logging.h"
 
 #include <eigen3/Eigen/src/Geometry/Quaternion.h>
 #include <math.h>
+#include "stdio.h"
 
 namespace imu_integration {
 
@@ -27,6 +29,8 @@ Activity::Activity(void)
 {}
 
 void Activity::Init(void) {
+    std::string filename ="/workspace/assignments/06-imu-navigation/src/imu_integration/result/gt.txt";
+    remove(filename.c_str());
     // parse IMU config:
     private_nh_.param("imu/device_name", imu_config_.device_name, std::string("GNSS_INS_SIM_IMU"));
     private_nh_.param("imu/topic_name", imu_config_.topic_name, std::string("/sim/sensor/imu"));
@@ -144,6 +148,28 @@ void Activity::GetGroundTruth(void) {
     angular_vel_ = EulerAngleRatesToBodyAngleRates(euler_angles, euler_angle_rates);
     // b. linear acceleration:
     linear_acc_ = R_gt_.transpose() * (a + G_);
+
+    std::ofstream save_points;
+    save_points.setf(std::ios::fixed, std::ios::floatfield);
+    save_points.open("/workspace/assignments/06-imu-navigation/src/imu_integration/result/gt.txt", std::ios::out|std::ios::app);
+
+    if(!save_points.is_open()){
+      std::cout << "fail to open file" << std::endl;
+      return;
+    }
+
+    Eigen::Quaterniond q(R_gt_);
+
+    save_points.precision(9);
+    save_points <<timestamp_in_sec<<" ";
+    save_points.precision(5);
+    save_points <<t_gt_(0)<<" "
+                <<t_gt_(1)<<" "
+                <<t_gt_(2)<<" "
+                <<q.x()<<" "
+                <<q.y()<<" "
+                <<q.z()<<" "
+                <<q.w() <<std::endl;
 }
 
 void Activity::AddNoise(double delta_t) {

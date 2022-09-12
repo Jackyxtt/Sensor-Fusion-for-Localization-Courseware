@@ -25,6 +25,7 @@ Activity::Activity(void)
 
 void Activity::Init(void) {
     // parse IMU config:
+    remove(filename.c_str());
     private_nh_.param("imu/topic_name", imu_config_.topic_name, std::string("/sim/sensor/imu"));
     imu_sub_ptr_ = std::make_shared<IMUSubscriber>(private_nh_, imu_config_.topic_name, 1000000);
 
@@ -57,13 +58,21 @@ void Activity::Init(void) {
     private_nh_.param("pose/topic_name/ground_truth", odom_config_.topic_name.ground_truth, std::string("/pose/ground_truth"));
     private_nh_.param("pose/topic_name/estimation", odom_config_.topic_name.estimation, std::string("/pose/estimation"));
 
+    private_nh_.param("save_path/path", filename, std::string("/workspace/assignments/06-imu-navigation/src/imu_integration/result/midPointIntegration.txt"));
+    private_nh_.param<bool>("Integration/useEuler", useEuler, false);
+    std::cout << "useEuler =" << useEuler << std::endl;
+
     odom_ground_truth_sub_ptr = std::make_shared<OdomSubscriber>(private_nh_, odom_config_.topic_name.ground_truth, 1000000);
     odom_estimation_pub_ = private_nh_.advertise<nav_msgs::Odometry>(odom_config_.topic_name.estimation, 500);
 }
 
 bool Activity::Run(void) {
     if (!ReadData())
+    {
+        // ROS_INFO("cannot read data");
         return false;
+    }
+        
 
     while(HasData()) {
         if (UpdatePose()) {
@@ -127,11 +136,23 @@ bool Activity::UpdatePose(void) {
         //
         // get deltas:
 
+        Eigen::Vector3d angular_delta;
+        Eigen::Matrix3d R_curr, R_prev;
+        double delta_t;
+        Eigen::Vector3d velocity_delta;
+
+        GetAngularDelta(1, 0, angular_delta);
+
         // update orientation:
+        UpdateOrientation(angular_delta, R_curr, R_prev);
 
         // get velocity delta:
+        GetVelocityDelta(1, 0, R_curr, R_prev, delta_t, velocity_delta);
 
         // update position:
+        UpdatePosition(delta_t, velocity_delta);
+
+
 
         // move forward -- 
         // NOTE: this is NOT fixed. you should update your buffer according to the method of your choice:
@@ -223,7 +244,11 @@ bool Activity::GetAngularDelta(
     Eigen::Vector3d angular_vel_curr = GetUnbiasedAngularVel(imu_data_curr.angular_velocity);
     Eigen::Vector3d angular_vel_prev = GetUnbiasedAngularVel(imu_data_prev.angular_velocity);
 
-    angular_delta = 0.5*delta_t*(angular_vel_curr + angular_vel_prev);
+    if (useEuler){
+        angular_delta = delta_t*angular_vel_prev;
+    }
+    else
+        angular_delta = 0.5*delta_t*(angular_vel_curr + angular_vel_prev);
 
     return true;
 }
@@ -260,7 +285,11 @@ bool Activity::GetVelocityDelta(
     Eigen::Vector3d linear_acc_curr = GetUnbiasedLinearAcc(imu_data_curr.linear_acceleration, R_curr);
     Eigen::Vector3d linear_acc_prev = GetUnbiasedLinearAcc(imu_data_prev.linear_acceleration, R_prev);
     
-    velocity_delta = 0.5*delta_t*(linear_acc_curr + linear_acc_prev);
+    if (useEuler){
+        velocity_delta = delta_t*linear_acc_prev;
+    }
+    else
+        velocity_delta = 0.5*delta_t*(linear_acc_curr + linear_acc_prev);
 
     return true;
 }
@@ -316,6 +345,8 @@ void Activity::UpdatePosition(const double &delta_t, const Eigen::Vector3d &velo
     //
     pose_.block<3, 1>(0, 3) += delta_t*vel_ + 0.5*delta_t*velocity_delta;
     vel_ += velocity_delta;
+
+    save_Pose_asTUM(filename, pose_, imu_data_buff_.front().time);
 }
 
 

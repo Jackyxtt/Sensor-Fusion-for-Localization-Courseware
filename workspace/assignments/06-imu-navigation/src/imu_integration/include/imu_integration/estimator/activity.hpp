@@ -7,6 +7,8 @@
 #define IMU_INTEGRATION_ACTIVITY_HPP_
 
 // common:
+#include <fstream>
+#include "stdio.h"
 #include <ros/ros.h>
 
 #include <Eigen/Dense>
@@ -97,6 +99,34 @@ class Activity {
      */
     void UpdatePosition(const double &delta_t, const Eigen::Vector3d &velocity_delta);
 
+    void save_Pose_asTUM(std::string filename, Eigen::Matrix4d pose_, double time)
+{
+    std::ofstream save_points;
+    save_points.setf(std::ios::fixed, std::ios::floatfield);
+    save_points.open(filename.c_str(), std::ios::out|std::ios::app);
+
+    if(!save_points.is_open()){
+      std::cout << "fail to open file" << std::endl;
+      return;
+    }
+
+    Eigen::Quaterniond q(pose_.block<3, 3>(0, 0));
+
+    save_points.precision(9);
+    save_points <<time<<" ";
+    save_points.precision(5);
+    save_points <<pose_(0, 3)<<" "
+                <<pose_(1, 3)<<" "
+                <<pose_(2, 3)<<" "
+                <<q.x()<<" "
+                <<q.y()<<" "
+                <<q.z()<<" "
+                <<q.w() <<std::endl;
+    
+    save_points.close();
+
+}
+
   private:
     // node handler:
     ros::NodeHandle private_nh_;
@@ -128,6 +158,9 @@ class Activity {
     Eigen::Vector3d vel_ = Eigen::Vector3d::Zero();
 
     nav_msgs::Odometry message_odom_;
+    std::string filename;// 保存路径
+
+    bool useEuler;
 };
 
 } // namespace estimator
