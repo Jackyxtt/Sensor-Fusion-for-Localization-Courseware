@@ -1,5 +1,5 @@
 # motion def:
-motion_file: 8circle.csv
+motion_file: recorder_gnss_ins_sim_speedconstant.csv
 # IMU params:
 imu: 1
 # sample frequency of simulated GNSS/IMU data:
@@ -7,8 +7,9 @@ sample_frequency:
     imu: 100.0
     gps: 10.0
 # topic name:
-topic_name: /sim/sensor/imu
+topic_name_imu: /sim/sensor/imu
+topic_name_gt: /sim/gt
 # output rosbag path:
 output_path: /workspace/assignments/06-imu-navigation/src/gnss_ins_sim/allan_variance_analysis
 # output name:
-output_name: data.bag
+output_name: speedconstant.bag
