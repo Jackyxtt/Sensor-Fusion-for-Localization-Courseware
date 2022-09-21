@@ -104,17 +104,21 @@ private:
 
 
   // state:
+  // 状态量
   using VectorX=Eigen::Matrix<double, kDimState, 1>;
+  // 状态量方差
   using MatrixP=Eigen::Matrix<double, kDimState, kDimState>;
 
   // process equation:
   using MatrixF=Eigen::Matrix<double, kDimState, kDimState>;
   using MatrixB=Eigen::Matrix<double, kDimState, kDimProcessNoise>;
+  // 噪声方差
   using MatrixQ=Eigen::Matrix<double, kDimProcessNoise, kDimProcessNoise>;
 
   // measurement equation:
   using MatrixGPose=Eigen::Matrix<double, kDimMeasurementPose,kDimState> ;
   using MatrixCPose=Eigen::Matrix<double, kDimMeasurementPose,kDimMeasurementPoseNoise>;
+  // 观测噪声方差
   using MatrixRPose=Eigen::Matrix<double, kDimMeasurementPoseNoise,kDimMeasurementPoseNoise>;
 
   // measurement:

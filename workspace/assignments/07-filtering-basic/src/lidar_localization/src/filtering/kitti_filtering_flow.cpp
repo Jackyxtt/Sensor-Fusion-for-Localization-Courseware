@@ -209,17 +209,17 @@ bool KITTIFilteringFlow::ValidLidarData() {
   double diff_pos_vel_time =
       current_cloud_data_.time - current_pos_vel_data_.time;
 
-  if (diff_imu_time < -0.05 || diff_pos_vel_time < -0.05) {
+  if (diff_imu_time < -0.05 || diff_pos_vel_time < -0.05) {//current_cloud_data_的时间小
     cloud_data_buff_.pop_front();
     return false;
   }
 
-  if (diff_imu_time > 0.05) {
+  if (diff_imu_time > 0.05) {//current_imu_synced_data_的时间小
     imu_synced_data_buff_.pop_front();
     return false;
   }
 
-  if (diff_pos_vel_time > 0.05) {
+  if (diff_pos_vel_time > 0.05) {//current_pos_vel_data_的时间小
     pos_vel_data_buff_.pop_front();
     return false;
   }

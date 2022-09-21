@@ -153,15 +153,15 @@ bool KITTIFiltering::InitWithConfig(void) {
             << std::endl;
 
   // a. init filters:
-  InitFilters(config_node);
+  InitFilters(config_node);//设置点云滤波方法
   // b. init map:
-  InitGlobalMap(config_node);
+  InitGlobalMap(config_node);//加载全局地图
   // c. init scan context manager:
-  InitScanContextManager(config_node);
+  InitScanContextManager(config_node);//设置ScanContext参数
   // d. init frontend:
-  InitRegistration(registration_ptr_, config_node);
+  InitRegistration(registration_ptr_, config_node);//设置点云与局部地图匹配方法
   // e. init fusion:
-  InitFusion(config_node);
+  InitFusion(config_node);//设置雷达与IMU融合方法
 
   // init local map for frontend matching:
   ResetLocalMap(0.0, 0.0, 0.0);
@@ -309,7 +309,7 @@ bool KITTIFiltering::SetInitGNSS(const Eigen::Matrix4f &gnss_pose) {
 
   return true;
 }
-
+// Scancontext设置初始位姿
 bool KITTIFiltering::SetInitPose(const Eigen::Matrix4f &init_pose) {
   init_pose_ = init_pose;
 
